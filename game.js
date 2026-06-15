@@ -10,10 +10,12 @@
   const pauseBtn = document.getElementById("pauseBtn");
   const resetBtn = document.getElementById("resetBtn");
   const overlayStartBtn = document.getElementById("overlayStartBtn");
+  const modeButtons = Array.from(document.querySelectorAll("[data-mode]"));
   const weaponButtons = Array.from(document.querySelectorAll("[data-weapon]"));
 
   const PAUSE_ICON = '<path d="M7 5h4v14H7zM13 5h4v14h-4z" />';
   const PLAY_ICON = '<path d="M8 5v14l11-7z" />';
+  const MODE_ORDER = ["code", "math", "english"];
   const WEAPON_ORDER = ["water", "fire", "ice", "laser"];
   const WEAPONS = {
     water: {
@@ -357,6 +359,139 @@
     },
   ];
 
+  const MATH_SNIPPETS = [
+    {
+      title: "高中数学 / 函数与导数",
+      lines: [
+        "f(x)=x^3-3x^2+2",
+        "f'(x)=3x^2-6x=3x(x-2)",
+        "critical points: x=0, x=2",
+        "x<0 or x>2  ->  f'(x)>0",
+        "0<x<2       ->  f'(x)<0",
+        "local max: f(0)=2",
+        "local min: f(2)=-2",
+        "",
+        "tangent at x=1:",
+        "f(1)=0, f'(1)=-3",
+        "y-0=-3(x-1)",
+        "y=-3x+3",
+      ],
+    },
+    {
+      title: "高中数学 / 三角恒等变换",
+      lines: [
+        "sin^2 x + cos^2 x = 1",
+        "tan x = sin x / cos x",
+        "sin(a+b)=sin a cos b + cos a sin b",
+        "cos(a+b)=cos a cos b - sin a sin b",
+        "",
+        "If sin x = 3/5 and x in Quadrant I:",
+        "cos x = 4/5",
+        "tan x = 3/4",
+        "",
+        "2 sin x cos x = sin 2x",
+        "cos^2 x - sin^2 x = cos 2x",
+      ],
+    },
+    {
+      title: "高中数学 / 概率统计",
+      lines: [
+        "P(A union B)=P(A)+P(B)-P(A inter B)",
+        "If A and B are independent:",
+        "P(A inter B)=P(A)P(B)",
+        "P(A|B)=P(A inter B)/P(B)",
+        "",
+        "E(X)=sum x_i p_i",
+        "Var(X)=E(X^2)-[E(X)]^2",
+        "sigma=sqrt(Var(X))",
+        "",
+        "binomial: X~B(n,p)",
+        "P(X=k)=C(n,k)p^k(1-p)^(n-k)",
+      ],
+    },
+    {
+      title: "高中数学 / 数列与不等式",
+      lines: [
+        "arithmetic sequence:",
+        "a_n=a_1+(n-1)d",
+        "S_n=n(a_1+a_n)/2",
+        "",
+        "geometric sequence:",
+        "a_n=a_1 q^(n-1)",
+        "S_n=a_1(1-q^n)/(1-q), q != 1",
+        "",
+        "AM-GM:",
+        "for a>0, b>0",
+        "(a+b)/2 >= sqrt(ab)",
+      ],
+    },
+  ];
+
+  const ENGLISH_SNIPPETS = [
+    {
+      title: "高中英语 / 语法填空",
+      lines: [
+        "If I had reviewed the notes earlier,",
+        "I would have felt calmer in the exam.",
+        "",
+        "Although the passage looks difficult,",
+        "the main idea is hidden in topic sentences.",
+        "",
+        "The project, which was led by students,",
+        "won first prize at the science fair.",
+        "",
+        "Neither pressure nor failure can stop",
+        "a learner who keeps improving every day.",
+      ],
+    },
+    {
+      title: "高中英语 / 写作句型",
+      lines: [
+        "There is no doubt that practice matters.",
+        "What impresses me most is your patience.",
+        "Only by reading widely can we write well.",
+        "",
+        "From my point of view,",
+        "confidence grows out of steady effort.",
+        "",
+        "Not only does the activity build teamwork,",
+        "but it also helps us understand responsibility.",
+      ],
+    },
+    {
+      title: "高中英语 / 阅读理解",
+      lines: [
+        "Skimming helps us catch the structure.",
+        "Scanning helps us find exact information.",
+        "",
+        "A contrast clue may appear after however,",
+        "while a cause clue often follows because.",
+        "",
+        "When choosing the best title,",
+        "focus on the whole passage, not one detail.",
+        "",
+        "Inference questions ask what the writer implies,",
+        "instead of what is directly stated.",
+      ],
+    },
+    {
+      title: "高中英语 / 完形填空",
+      lines: [
+        "Look before and after each blank.",
+        "Keep the tone of the story consistent.",
+        "",
+        "If the sentence shows a result,",
+        "choose therefore or so.",
+        "",
+        "If it shows a concession,",
+        "choose although, though, or even if.",
+        "",
+        "A good answer must fit grammar,",
+        "meaning, collocation, and context.",
+      ],
+    },
+  ];
+
   const HIGHLIGHT = {
     keyword: "#ff7b5f",
     string: "#f6c85f",
@@ -419,6 +554,96 @@
     "while",
   ]);
 
+  const MATH_WORDS = new Set([
+    "AM",
+    "GM",
+    "C",
+    "E",
+    "If",
+    "P",
+    "Quadrant",
+    "S",
+    "Var",
+    "and",
+    "arithmetic",
+    "binomial",
+    "cos",
+    "critical",
+    "for",
+    "geometric",
+    "in",
+    "independent",
+    "inter",
+    "local",
+    "max",
+    "min",
+    "or",
+    "points",
+    "sequence",
+    "sigma",
+    "sin",
+    "sqrt",
+    "sum",
+    "tan",
+    "tangent",
+    "union",
+  ]);
+
+  const ENGLISH_WORDS = new Set([
+    "Although",
+    "From",
+    "If",
+    "Inference",
+    "Neither",
+    "Not",
+    "Only",
+    "Scanning",
+    "Skimming",
+    "There",
+    "What",
+    "When",
+    "a",
+    "after",
+    "although",
+    "and",
+    "because",
+    "before",
+    "but",
+    "by",
+    "can",
+    "does",
+    "even",
+    "however",
+    "if",
+    "instead",
+    "nor",
+    "not",
+    "of",
+    "or",
+    "so",
+    "that",
+    "therefore",
+    "though",
+    "which",
+    "while",
+    "who",
+  ]);
+
+  const CONTENT_MODES = {
+    code: {
+      label: "代码",
+      snippets: CODE_SNIPPETS,
+    },
+    math: {
+      label: "数学",
+      snippets: MATH_SNIPPETS,
+    },
+    english: {
+      label: "英语",
+      snippets: ENGLISH_SNIPPETS,
+    },
+  };
+
   const CODE_FONT = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
   let width = 1;
@@ -439,6 +664,7 @@
   let elapsed = 0;
   let pressure = 1;
   let sprayActive = false;
+  let activeMode = "code";
   let activeWeapon = "water";
   let lastHitAt = 0;
   let screenShake = 0;
@@ -540,7 +766,8 @@
   }
 
   function refillSnippetDeck() {
-    snippetDeck = CODE_SNIPPETS.map((_, index) => index);
+    const source = modeConfig().snippets;
+    snippetDeck = source.map((_, index) => index);
     for (let i = snippetDeck.length - 1; i > 0; i -= 1) {
       const swap = Math.floor(Math.random() * (i + 1));
       [snippetDeck[i], snippetDeck[swap]] = [snippetDeck[swap], snippetDeck[i]];
@@ -552,7 +779,7 @@
       refillSnippetDeck();
     }
     const index = snippetDeck.shift();
-    return CODE_SNIPPETS[index];
+    return modeConfig().snippets[index];
   }
 
   function buildCodeScene() {
@@ -583,6 +810,7 @@
     const panelHeight = header + padding * 1.15 + currentSnippet.lines.length * lineHeight;
     const panel = {
       ...currentSnippet,
+      mode: activeMode,
       level,
       fontSize: baseFont,
       charWidth,
@@ -686,7 +914,7 @@
     const textTop = panel.y + panel.header + panel.padding;
     for (let lineIndex = 0; lineIndex < panel.lines.length; lineIndex += 1) {
       const line = panel.lines[lineIndex];
-      const segments = highlightLine(line);
+      const segments = highlightLine(line, panel.mode || activeMode);
       let column = 0;
       for (const segment of segments) {
         for (const char of segment.text) {
@@ -725,10 +953,18 @@
     }
   }
 
-  function highlightLine(line) {
+  function highlightLine(line, modeName = activeMode) {
+    if (modeName === "math") {
+      return highlightMathLine(line);
+    }
+    if (modeName === "english") {
+      return highlightEnglishLine(line);
+    }
+    return highlightCodeLine(line);
+  }
+
+  function tokenizeLine(line, tokenPattern, colorForTokenFn) {
     const segments = [];
-    const tokenPattern =
-      /\/\/.*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b\d+(?:\.\d+)?\b|[A-Za-z_$][\w$]*(?=\s*\()|[A-Za-z_$][\w$]*|===|!==|=>|\+\+|--|\+=|-=|[{}()[\].,;:+\-*/=<>!&|?]/g;
     let cursor = 0;
     let match = tokenPattern.exec(line);
 
@@ -738,7 +974,7 @@
       }
 
       const token = match[0];
-      segments.push({ text: token, color: colorForToken(token, line, match.index) });
+      segments.push({ text: token, color: colorForTokenFn(token, line, match.index) });
       cursor = match.index + token.length;
       match = tokenPattern.exec(line);
     }
@@ -749,7 +985,24 @@
     return segments;
   }
 
-  function colorForToken(token, line, index) {
+  function highlightCodeLine(line) {
+    const tokenPattern =
+      /\/\/.*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b\d+(?:\.\d+)?\b|[A-Za-z_$][\w$]*(?=\s*\()|[A-Za-z_$][\w$]*|===|!==|=>|\+\+|--|\+=|-=|[{}()[\].,;:+\-*/=<>!&|?]/g;
+    return tokenizeLine(line, tokenPattern, colorForCodeToken);
+  }
+
+  function highlightMathLine(line) {
+    const tokenPattern =
+      /\b(?:sin|cos|tan|sqrt|sum|log|ln|lim|Var|Quadrant|AM|GM)\b|\b[A-Za-z]+(?:_[A-Za-z0-9]+)?\b|\b\d+(?:\.\d+)?\b|>=|<=|!=|->|[{}()[\].,;:+\-*/=<>!&|?^~]/g;
+    return tokenizeLine(line, tokenPattern, colorForMathToken);
+  }
+
+  function highlightEnglishLine(line) {
+    const tokenPattern = /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b[A-Za-z]+(?:'[A-Za-z]+)?\b|\b\d+\b|[{}()[\].,;:!?-]/g;
+    return tokenizeLine(line, tokenPattern, colorForEnglishToken);
+  }
+
+  function colorForCodeToken(token, line, index) {
     if (token.startsWith("//")) {
       return HIGHLIGHT.comment;
     }
@@ -773,6 +1026,44 @@
     }
     if (index > 0 && line[index - 1] === ".") {
       return HIGHLIGHT.property;
+    }
+    return HIGHLIGHT.identifier;
+  }
+
+  function colorForMathToken(token) {
+    if (/^\d/.test(token)) {
+      return HIGHLIGHT.number;
+    }
+    if (/^(>=|<=|!=|->|[+\-*/=<>^~])$/.test(token)) {
+      return HIGHLIGHT.operator;
+    }
+    if (/^[{}()[\].,;:!?]$/.test(token)) {
+      return HIGHLIGHT.punctuation;
+    }
+    if (MATH_WORDS.has(token)) {
+      return HIGHLIGHT.function;
+    }
+    if (/^[a-zA-Z](_[a-zA-Z0-9]+)?$/.test(token)) {
+      return HIGHLIGHT.keyword;
+    }
+    return HIGHLIGHT.identifier;
+  }
+
+  function colorForEnglishToken(token) {
+    if (token.startsWith("'") || token.startsWith('"')) {
+      return HIGHLIGHT.string;
+    }
+    if (/^\d/.test(token)) {
+      return HIGHLIGHT.number;
+    }
+    if (/^[{}()[\].,;:!?-]$/.test(token)) {
+      return HIGHLIGHT.punctuation;
+    }
+    if (ENGLISH_WORDS.has(token)) {
+      return HIGHLIGHT.keyword;
+    }
+    if (token.length >= 8) {
+      return HIGHLIGHT.function;
     }
     return HIGHLIGHT.identifier;
   }
@@ -816,8 +1107,26 @@
     updateHud();
   }
 
+  function modeConfig() {
+    return CONTENT_MODES[activeMode] || CONTENT_MODES.code;
+  }
+
   function weaponConfig() {
     return WEAPONS[activeWeapon] || WEAPONS.water;
+  }
+
+  function setMode(name) {
+    if (!CONTENT_MODES[name] || activeMode === name) {
+      return;
+    }
+    activeMode = name;
+    resetRound();
+    screenShake = Math.min(8, screenShake + 2.2);
+    if (state !== "idle") {
+      startOverlay.classList.add("hidden");
+    }
+    updateModeUI();
+    updateHud();
   }
 
   function setWeapon(name) {
@@ -844,8 +1153,17 @@
     }
   }
 
+  function updateModeUI() {
+    for (const button of modeButtons) {
+      const selected = button.dataset.mode === activeMode;
+      button.classList.toggle("active", selected);
+      button.setAttribute("aria-pressed", selected ? "true" : "false");
+    }
+  }
+
   function updateHud() {
     const weapon = weaponConfig();
+    const mode = modeConfig();
     const scoreText = String(Math.floor(score)).padStart(6, "0");
     if (hudCache.score !== scoreText) {
       scoreEl.textContent = scoreText;
@@ -866,7 +1184,7 @@
     }
 
     if (state === "idle") {
-      setRoundState(`${weapon.label}待机`);
+      setRoundState(`${mode.label} · ${weapon.label}待机`);
       setPauseMode("pause");
       return;
     }
@@ -879,11 +1197,12 @@
 
     let stateText;
     if (nextSnippetTimer > 0) {
-      stateText = `${weapon.label}换段`;
+      stateText = `${mode.label} · ${weapon.label}换段`;
     } else if (cleaned >= totalCleanable && totalCleanable > 0) {
-      stateText = `${weapon.label} · 第 ${level} 段已清`;
+      stateText = `${mode.label} · ${weapon.label} · 第 ${level} 段已清`;
     } else {
-      stateText = combo > 10 ? `${weapon.label} · 第 ${level} 段连击` : `${weapon.label} · 第 ${level} 段`;
+      stateText =
+        combo > 10 ? `${mode.label} · ${weapon.label} · 第 ${level} 段连击` : `${mode.label} · ${weapon.label} · 第 ${level} 段`;
     }
     setRoundState(stateText);
     setPauseMode("pause");
@@ -1919,6 +2238,11 @@
   overlayStartBtn.addEventListener("click", startGame);
   pauseBtn.addEventListener("click", togglePause);
   resetBtn.addEventListener("click", hardReset);
+  for (const button of modeButtons) {
+    button.addEventListener("click", () => {
+      setMode(button.dataset.mode);
+    });
+  }
   for (const button of weaponButtons) {
     button.addEventListener("click", () => {
       setWeapon(button.dataset.weapon);
@@ -1930,6 +2254,10 @@
     const numberKey = event.code.startsWith("Digit") ? event.code.slice(5) : event.key;
     if (/^[1-4]$/.test(numberKey)) {
       setWeapon(WEAPON_ORDER[Number(numberKey) - 1]);
+      event.preventDefault();
+    }
+    if (/^[5-7]$/.test(numberKey)) {
+      setMode(MODE_ORDER[Number(numberKey) - 5]);
       event.preventDefault();
     }
     if (event.code === "KeyQ") {
@@ -1997,6 +2325,7 @@
   setCanvasSize();
   resetRound();
   state = "idle";
+  updateModeUI();
   updateWeaponUI();
   updateHud();
   requestAnimationFrame(frame);
