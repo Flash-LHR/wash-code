@@ -363,66 +363,66 @@
     {
       title: "高中数学 / 函数与导数",
       lines: [
-        "f(x)=x^3-3x^2+2",
-        "f'(x)=3x^2-6x=3x(x-2)",
-        "critical points: x=0, x=2",
-        "x<0 or x>2  ->  f'(x)>0",
-        "0<x<2       ->  f'(x)<0",
-        "local max: f(0)=2",
-        "local min: f(2)=-2",
+        "f(x)=x³−3x²+2",
+        "f′(x)=3x²−6x=3x(x−2)",
+        "驻点：x=0，x=2",
+        "x∈(−∞,0)∪(2,+∞) ⇒ f′(x)>0",
+        "x∈(0,2) ⇒ f′(x)<0",
+        "极大值：f(0)=2",
+        "极小值：f(2)=−2",
         "",
-        "tangent at x=1:",
-        "f(1)=0, f'(1)=-3",
-        "y-0=-3(x-1)",
-        "y=-3x+3",
+        "切线：x=1",
+        "f(1)=0，f′(1)=−3",
+        "y−0=−3(x−1)",
+        "y=−3x+3",
       ],
     },
     {
       title: "高中数学 / 三角恒等变换",
       lines: [
-        "sin^2 x + cos^2 x = 1",
-        "tan x = sin x / cos x",
-        "sin(a+b)=sin a cos b + cos a sin b",
-        "cos(a+b)=cos a cos b - sin a sin b",
+        "sin²x+cos²x=1",
+        "tan x=sin x⁄cos x",
+        "sin(α+β)=sinαcosβ+cosαsinβ",
+        "cos(α+β)=cosαcosβ−sinαsinβ",
         "",
-        "If sin x = 3/5 and x in Quadrant I:",
-        "cos x = 4/5",
-        "tan x = 3/4",
+        "若 sin x=⅗，且 x∈第一象限：",
+        "cos x=⅘",
+        "tan x=¾",
         "",
-        "2 sin x cos x = sin 2x",
-        "cos^2 x - sin^2 x = cos 2x",
+        "2sinxcosx=sin2x",
+        "cos²x−sin²x=cos2x",
       ],
     },
     {
       title: "高中数学 / 概率统计",
       lines: [
-        "P(A union B)=P(A)+P(B)-P(A inter B)",
-        "If A and B are independent:",
-        "P(A inter B)=P(A)P(B)",
-        "P(A|B)=P(A inter B)/P(B)",
+        "P(A∪B)=P(A)+P(B)−P(A∩B)",
+        "若 A 与 B 相互独立：",
+        "P(A∩B)=P(A)P(B)",
+        "P(A∣B)=P(A∩B)⁄P(B)",
         "",
-        "E(X)=sum x_i p_i",
-        "Var(X)=E(X^2)-[E(X)]^2",
-        "sigma=sqrt(Var(X))",
+        "E(X)=∑xᵢpᵢ",
+        "Var(X)=E(X²)−[E(X)]²",
+        "σ=√Var(X)",
         "",
-        "binomial: X~B(n,p)",
-        "P(X=k)=C(n,k)p^k(1-p)^(n-k)",
+        "二项分布：X~B(n,p)",
+        "P(X=k)=Cₙᵏpᵏ(1−p)ⁿ⁻ᵏ",
       ],
     },
     {
       title: "高中数学 / 数列与不等式",
       lines: [
-        "arithmetic sequence:",
-        "a_n=a_1+(n-1)d",
-        "S_n=n(a_1+a_n)/2",
+        "等差数列：",
+        "aₙ=a₁+(n−1)d",
+        "Sₙ=n(a₁+aₙ)⁄2",
         "",
-        "geometric sequence:",
-        "a_n=a_1 q^(n-1)",
-        "S_n=a_1(1-q^n)/(1-q), q != 1",
+        "等比数列：",
+        "aₙ=a₁qⁿ⁻¹",
+        "Sₙ=a₁(1−qⁿ)⁄(1−q)，q≠1",
         "",
         "AM-GM:",
-        "for a>0, b>0",
-        "(a+b)/2 >= sqrt(ab)",
+        "a>0，b>0",
+        "(a+b)⁄2 ≥ √ab",
       ],
     },
   ];
@@ -645,6 +645,8 @@
   };
 
   const CODE_FONT = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+  const MATH_FONT = 'Georgia, "Times New Roman", "STIX Two Math", Cambria, serif';
+  const ENGLISH_FONT = 'Georgia, "Times New Roman", serif';
 
   let width = 1;
   let height = 1;
@@ -704,6 +706,20 @@
 
   const rand = (min, max) => Math.random() * (max - min) + min;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+  function fontForMode(modeName) {
+    if (modeName === "math") {
+      return MATH_FONT;
+    }
+    if (modeName === "english") {
+      return ENGLISH_FONT;
+    }
+    return CODE_FONT;
+  }
+
+  function modeUsesProportionalText(modeName) {
+    return modeName === "math";
+  }
 
   function trimList(list, limit) {
     if (list.length > limit) {
@@ -792,20 +808,22 @@
       currentSnippet = pickNextSnippet();
     }
 
-    const maxLen = Math.max(...currentSnippet.lines.map((line) => line.length));
+    const fontFamily = fontForMode(activeMode);
+    const maxLen = Math.max(...currentSnippet.lines.map((line) => Array.from(line).length));
     const fitFont = (width - 56) / Math.max(24, maxLen * 0.64 + 5.5);
-    const baseFont = Math.round(clamp(Math.min(width / 70, fitFont), width < 620 ? 8 : 13, 18));
+    const baseFont = Math.round(clamp(Math.min(width / 70, fitFont), width < 620 ? 8 : 13, activeMode === "math" ? 20 : 18));
     const lineHeight = Math.round(baseFont * 1.72);
     const padding = Math.round(baseFont * 1.25);
     const gutter = Math.round(baseFont * 3.15);
     const header = Math.round(baseFont * 2.35);
 
     ctx.save();
-    ctx.font = `${baseFont}px ${CODE_FONT}`;
+    ctx.font = `700 ${baseFont}px ${fontFamily}`;
     const charWidth = Math.ceil(ctx.measureText("M").width);
+    const maxLineWidth = Math.max(...currentSnippet.lines.map((line) => ctx.measureText(line).width));
     ctx.restore();
 
-    const desiredWidth = Math.ceil(maxLen * charWidth + gutter + padding * 2);
+    const desiredWidth = Math.ceil(maxLineWidth + gutter + padding * 2);
     const panelWidth = clamp(desiredWidth, width < 620 ? width - 24 : 470, width - 28);
     const panelHeight = header + padding * 1.15 + currentSnippet.lines.length * lineHeight;
     const panel = {
@@ -813,6 +831,7 @@
       mode: activeMode,
       level,
       fontSize: baseFont,
+      fontFamily,
       charWidth,
       lineHeight,
       padding,
@@ -912,17 +931,22 @@
   function createCharsForPanel(panel) {
     const textX = panel.x + panel.gutter + panel.padding;
     const textTop = panel.y + panel.header + panel.padding;
+    const proportional = modeUsesProportionalText(panel.mode);
+    ctx.save();
+    ctx.font = `700 ${panel.fontSize}px ${panel.fontFamily || CODE_FONT}`;
     for (let lineIndex = 0; lineIndex < panel.lines.length; lineIndex += 1) {
       const line = panel.lines[lineIndex];
       const segments = highlightLine(line, panel.mode || activeMode);
-      let column = 0;
+      let cursorX = textX;
       for (const segment of segments) {
-        for (const char of segment.text) {
+        for (const char of Array.from(segment.text)) {
+          const advance = proportional ? Math.max(panel.fontSize * 0.32, ctx.measureText(char).width + panel.fontSize * 0.08) : panel.charWidth;
           if (char !== " ") {
-            const x = textX + column * panel.charWidth;
+            const x = cursorX;
             const y = textTop + lineIndex * panel.lineHeight;
             codeChars.push({
               char,
+              mode: panel.mode,
               originX: x,
               originY: y,
               x,
@@ -932,7 +956,8 @@
               angle: 0,
               spin: 0,
               fontSize: panel.fontSize,
-              charWidth: panel.charWidth,
+              fontFamily: panel.fontFamily,
+              charWidth: proportional ? advance : panel.charWidth,
               lineHeight: panel.lineHeight,
               color: segment.color,
               hp: rand(24, 42),
@@ -947,10 +972,11 @@
               state: "attached",
             });
           }
-          column += 1;
+          cursorX += advance;
         }
       }
     }
+    ctx.restore();
   }
 
   function highlightLine(line, modeName = activeMode) {
@@ -993,7 +1019,7 @@
 
   function highlightMathLine(line) {
     const tokenPattern =
-      /\b(?:sin|cos|tan|sqrt|sum|log|ln|lim|Var|Quadrant|AM|GM)\b|\b[A-Za-z]+(?:_[A-Za-z0-9]+)?\b|\b\d+(?:\.\d+)?\b|>=|<=|!=|->|[{}()[\].,;:+\-*/=<>!&|?^~]/g;
+      /\b(?:sin|cos|tan|log|ln|lim|Var|AM|GM)\b|\b[A-Za-z]+(?:_[A-Za-z0-9]+)?\b|\b\d+(?:\.\d+)?\b|[₀-₉⁰-⁹ᵢᵏⁿ⁻ₙ₁²³⅗⅘¾αβσ∞∑√∪∩∈∣⇒→≤≥≠−⁄{}()[\].,;:，：+\-*/=<>!&|?^~]/g;
     return tokenizeLine(line, tokenPattern, colorForMathToken);
   }
 
@@ -1034,11 +1060,14 @@
     if (/^\d/.test(token)) {
       return HIGHLIGHT.number;
     }
-    if (/^(>=|<=|!=|->|[+\-*/=<>^~])$/.test(token)) {
+    if (/^[+\-*/=<>^~∪∩∈∣⇒→≤≥≠−⁄√∑∞]$/.test(token)) {
       return HIGHLIGHT.operator;
     }
-    if (/^[{}()[\].,;:!?]$/.test(token)) {
+    if (/^[{}()[\].,;:!?，：]$/.test(token)) {
       return HIGHLIGHT.punctuation;
+    }
+    if (/^[₀-₉⁰-⁹ᵢᵏⁿ⁻ₙ₁²³⅗⅘¾αβσ]$/.test(token)) {
+      return HIGHLIGHT.number;
     }
     if (MATH_WORDS.has(token)) {
       return HIGHLIGHT.function;
@@ -1557,11 +1586,11 @@
     screenShake = Math.min(10, screenShake + (weaponName === "laser" ? 0.9 : weaponName === "fire" ? 0.8 : 0.65));
     if (frameSplashes < MAX_SPLASHES_PER_FRAME) {
       frameSplashes += 1;
-      makeCharSplash(codeChar.x, codeChar.y, codeChar.char, codeChar.color, weaponName);
+      makeCharSplash(codeChar.x, codeChar.y, codeChar.char, codeChar.color, weaponName, codeChar.fontFamily);
     }
   }
 
-  function makeCharSplash(x, y, char, color, weaponName = activeWeapon) {
+  function makeCharSplash(x, y, char, color, weaponName = activeWeapon, fontFamily = CODE_FONT) {
     const weapon = WEAPONS[weaponName] || WEAPONS.water;
     const burstCount = weaponName === "laser" ? 5 : weaponName === "fire" || weaponName === "ice" ? 5 : 4;
     for (let i = 0; i < burstCount; i += 1) {
@@ -1575,6 +1604,7 @@
         size: weaponName === "laser" ? rand(7, 13) : rand(9, 15),
         life: weaponName === "laser" ? rand(0.2, 0.45) : rand(0.3, 0.68),
         text: char,
+        fontFamily,
         color:
           weaponName === "fire"
             ? (Math.random() > 0.5 ? "#ffb14e" : "#fff2a8")
@@ -1706,7 +1736,7 @@
       const shakeX = codeChar.jitter > 0 ? rand(-codeChar.jitter, codeChar.jitter) : 0;
       const shakeY = codeChar.jitter > 0 ? rand(-codeChar.jitter, codeChar.jitter) : 0;
       const searchPulse = progress > 0.82 ? (Math.sin(elapsed * 8 + codeChar.originX * 0.04) + 1) * 0.5 : 0;
-      const nextFont = `700 ${codeChar.fontSize}px ${CODE_FONT}`;
+      const nextFont = `700 ${codeChar.fontSize}px ${codeChar.fontFamily || CODE_FONT}`;
       if (currentFont !== nextFont) {
         ctx.font = nextFont;
         currentFont = nextFont;
@@ -1819,7 +1849,7 @@
       ctx.save();
       ctx.translate(codeChar.x + codeChar.charWidth * 0.5, codeChar.y - codeChar.fontSize * 0.5);
       ctx.rotate(codeChar.angle);
-      ctx.font = `750 ${codeChar.fontSize}px ${CODE_FONT}`;
+      ctx.font = `750 ${codeChar.fontSize}px ${codeChar.fontFamily || CODE_FONT}`;
       ctx.globalAlpha = clamp((height + 80 - codeChar.y) / 120, 0, 1);
       ctx.fillStyle =
         codeChar.breakWeapon === "fire"
@@ -2024,7 +2054,7 @@
       ctx.rotate(bit.angle + bit.spin * bit.life);
       ctx.globalAlpha = clamp(bit.life * 1.8, 0, 1);
       ctx.fillStyle = bit.color;
-      ctx.font = `750 ${bit.size}px ${CODE_FONT}`;
+      ctx.font = `750 ${bit.size}px ${bit.fontFamily || CODE_FONT}`;
       ctx.fillText(bit.text, 0, 0);
       ctx.restore();
     }
