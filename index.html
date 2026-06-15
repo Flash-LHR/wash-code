@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Wash</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app" aria-label="Code Wash">
+      <header class="hud">
+        <div class="brand" aria-label="Code Wash">
+          <span class="brand-mark">CW</span>
+          <span class="brand-text">Code Wash</span>
+        </div>
+
+        <div class="metrics" aria-live="polite">
+          <div class="metric">
+            <span id="score">000000</span>
+            <small>分数</small>
+          </div>
+          <div class="metric">
+            <span id="combo">x1</span>
+            <small>连击</small>
+          </div>
+          <div class="metric">
+            <span id="clean">0%</span>
+            <small>清爽</small>
+          </div>
+        </div>
+
+        <nav class="controls" aria-label="游戏控制">
+          <button id="startBtn" class="control primary" type="button" aria-label="开始">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <span>开始</span>
+          </button>
+          <button id="pauseBtn" class="control" type="button" aria-label="暂停">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 5h4v14H7zM13 5h4v14h-4z" />
+            </svg>
+            <span>暂停</span>
+          </button>
+          <button id="resetBtn" class="control icon-only" type="button" aria-label="重开">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 12a8 8 0 1 1-2.34-5.66" />
+              <path d="M20 4v6h-6" />
+            </svg>
+          </button>
+        </nav>
+      </header>
+
+      <section class="stage" aria-label="游戏区域">
+        <canvas id="gameCanvas"></canvas>
+        <div id="startOverlay" class="start-overlay">
+          <div class="splash-lockup">
+            <span class="splash-kicker">PRESSURE CLEAN</span>
+            <h1>Code Wash</h1>
+            <button id="overlayStartBtn" class="launch" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              <span>开始冲洗</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="statusbar">
+        <div id="weaponBar" class="weapon-bar" role="group" aria-label="武器切换">
+          <button class="weapon active" type="button" data-weapon="water" aria-label="水枪 1" aria-pressed="true" title="水枪 1">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="none" d="M12 3C8 8 6 11 6 14a6 6 0 0 0 12 0c0-3-2-6-6-11z" />
+            </svg>
+            <span>水</span>
+          </button>
+          <button class="weapon" type="button" data-weapon="fire" aria-label="火枪 2" aria-pressed="false" title="火枪 2">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="none" d="M12 21c-3.6 0-6.5-2.7-6.5-6.2 0-2.5 1.4-4.6 3.6-6.5.2 2.1 1.3 3.2 2.6 3.9-.5-3.2.9-5.9 3.6-8.2.4 3.1 2.9 4.9 3.2 8.2.3 4-2.5 8.8-6.5 8.8z" />
+            </svg>
+            <span>火</span>
+          </button>
+          <button class="weapon" type="button" data-weapon="ice" aria-label="冰枪 3" aria-pressed="false" title="冰枪 3">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="none" d="M12 3v18M5 7l14 10M19 7 5 17M8 5l4 3 4-3M8 19l4-3 4 3" />
+            </svg>
+            <span>冰</span>
+          </button>
+          <button class="weapon" type="button" data-weapon="laser" aria-label="激光枪 4" aria-pressed="false" title="激光枪 4">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="none" d="M13 2 4 13h7l-1 9 10-13h-7l1-7z" />
+            </svg>
+            <span>光</span>
+          </button>
+        </div>
+        <div id="roundState" class="round-state">待机</div>
+      </footer>
+    </main>
+
+    <script src="./game.js?v=elemental-arsenal-6"></script>
+  </body>
+</html>
