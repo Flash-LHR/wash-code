@@ -330,12 +330,8 @@ h1 {
   --mode: #34d1bf;
 }
 
-.mode[data-mode="math"] {
-  --mode: #f6c85f;
-}
-
-.mode[data-mode="english"] {
-  --mode: #8be36a;
+.mode[data-mode="brain"] {
+  --mode: #ff7b5f;
 }
 
 .weapon {

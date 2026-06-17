@@ -15,7 +15,7 @@
 
   const PAUSE_ICON = '<path d="M7 5h4v14H7zM13 5h4v14h-4z" />';
   const PLAY_ICON = '<path d="M8 5v14l11-7z" />';
-  const MODE_ORDER = ["code", "math", "english"];
+  const MODE_ORDER = ["code", "brain"];
   const WEAPON_ORDER = ["water", "fire", "ice", "laser"];
   const WEAPONS = {
     water: {
@@ -359,136 +359,31 @@
     },
   ];
 
-  const MATH_SNIPPETS = [
-    {
-      title: "高中数学 / 函数与导数",
-      lines: [
-        "f(x)=x³−3x²+2",
-        "f′(x)=3x²−6x=3x(x−2)",
-        "驻点：x=0，x=2",
-        "x∈(−∞,0)∪(2,+∞) ⇒ f′(x)>0",
-        "x∈(0,2) ⇒ f′(x)<0",
-        "极大值：f(0)=2",
-        "极小值：f(2)=−2",
-        "",
-        "切线：x=1",
-        "f(1)=0，f′(1)=−3",
-        "y−0=−3(x−1)",
-        "y=−3x+3",
-      ],
-    },
-    {
-      title: "高中数学 / 三角恒等变换",
-      lines: [
-        "sin²x+cos²x=1",
-        "tan x=sin x⁄cos x",
-        "sin(α+β)=sinαcosβ+cosαsinβ",
-        "cos(α+β)=cosαcosβ−sinαsinβ",
-        "",
-        "若 sin x=⅗，且 x∈第一象限：",
-        "cos x=⅘",
-        "tan x=¾",
-        "",
-        "2sinxcosx=sin2x",
-        "cos²x−sin²x=cos2x",
-      ],
-    },
-    {
-      title: "高中数学 / 概率统计",
-      lines: [
-        "P(A∪B)=P(A)+P(B)−P(A∩B)",
-        "若 A 与 B 相互独立：",
-        "P(A∩B)=P(A)P(B)",
-        "P(A∣B)=P(A∩B)⁄P(B)",
-        "",
-        "E(X)=∑xᵢpᵢ",
-        "Var(X)=E(X²)−[E(X)]²",
-        "σ=√Var(X)",
-        "",
-        "二项分布：X~B(n,p)",
-        "P(X=k)=Cₙᵏpᵏ(1−p)ⁿ⁻ᵏ",
-      ],
-    },
-    {
-      title: "高中数学 / 数列与不等式",
-      lines: [
-        "等差数列：",
-        "aₙ=a₁+(n−1)d",
-        "Sₙ=n(a₁+aₙ)⁄2",
-        "",
-        "等比数列：",
-        "aₙ=a₁qⁿ⁻¹",
-        "Sₙ=a₁(1−qⁿ)⁄(1−q)，q≠1",
-        "",
-        "AM-GM:",
-        "a>0，b>0",
-        "(a+b)⁄2 ≥ √ab",
-      ],
-    },
-  ];
+  const CODE_CLEANABLE_COUNTS = CODE_SNIPPETS.map((snippet) =>
+    snippet.lines.reduce((count, line) => count + Array.from(line).filter((char) => char !== " ").length, 0),
+  );
+  const AVERAGE_CODE_CLEANABLE = Math.round(
+    CODE_CLEANABLE_COUNTS.reduce((sum, count) => sum + count, 0) / CODE_CLEANABLE_COUNTS.length,
+  );
 
-  const ENGLISH_SNIPPETS = [
+  const BRAIN_SNIPPETS = [
     {
-      title: "高中英语 / 语法填空",
-      lines: [
-        "If I had reviewed the notes earlier,",
-        "I would have felt calmer in the exam.",
-        "",
-        "Although the passage looks difficult,",
-        "the main idea is hidden in topic sentences.",
-        "",
-        "The project, which was led by students,",
-        "won first prize at the science fair.",
-        "",
-        "Neither pressure nor failure can stop",
-        "a learner who keeps improving every day.",
-      ],
+      title: "脑洞清理",
+      seed: 19,
+      targetCount: Math.round(AVERAGE_CODE_CLEANABLE * 0.92),
+      items: ["🐛", "💩", "💧", "🐛", "💧", "💩"],
     },
     {
-      title: "高中英语 / 写作句型",
-      lines: [
-        "There is no doubt that practice matters.",
-        "What impresses me most is your patience.",
-        "Only by reading widely can we write well.",
-        "",
-        "From my point of view,",
-        "confidence grows out of steady effort.",
-        "",
-        "Not only does the activity build teamwork,",
-        "but it also helps us understand responsibility.",
-      ],
+      title: "脑洞清理",
+      seed: 43,
+      targetCount: Math.round(AVERAGE_CODE_CLEANABLE * 1.05),
+      items: ["💩", "🐛", "💧", "💧", "🐛", "💩"],
     },
     {
-      title: "高中英语 / 阅读理解",
-      lines: [
-        "Skimming helps us catch the structure.",
-        "Scanning helps us find exact information.",
-        "",
-        "A contrast clue may appear after however,",
-        "while a cause clue often follows because.",
-        "",
-        "When choosing the best title,",
-        "focus on the whole passage, not one detail.",
-        "",
-        "Inference questions ask what the writer implies,",
-        "instead of what is directly stated.",
-      ],
-    },
-    {
-      title: "高中英语 / 完形填空",
-      lines: [
-        "Look before and after each blank.",
-        "Keep the tone of the story consistent.",
-        "",
-        "If the sentence shows a result,",
-        "choose therefore or so.",
-        "",
-        "If it shows a concession,",
-        "choose although, though, or even if.",
-        "",
-        "A good answer must fit grammar,",
-        "meaning, collocation, and context.",
-      ],
+      title: "脑洞清理",
+      seed: 71,
+      targetCount: Math.round(AVERAGE_CODE_CLEANABLE * 0.98),
+      items: ["💧", "💧", "🐛", "💩", "🐛", "💩"],
     },
   ];
 
@@ -554,99 +449,20 @@
     "while",
   ]);
 
-  const MATH_WORDS = new Set([
-    "AM",
-    "GM",
-    "C",
-    "E",
-    "If",
-    "P",
-    "Quadrant",
-    "S",
-    "Var",
-    "and",
-    "arithmetic",
-    "binomial",
-    "cos",
-    "critical",
-    "for",
-    "geometric",
-    "in",
-    "independent",
-    "inter",
-    "local",
-    "max",
-    "min",
-    "or",
-    "points",
-    "sequence",
-    "sigma",
-    "sin",
-    "sqrt",
-    "sum",
-    "tan",
-    "tangent",
-    "union",
-  ]);
-
-  const ENGLISH_WORDS = new Set([
-    "Although",
-    "From",
-    "If",
-    "Inference",
-    "Neither",
-    "Not",
-    "Only",
-    "Scanning",
-    "Skimming",
-    "There",
-    "What",
-    "When",
-    "a",
-    "after",
-    "although",
-    "and",
-    "because",
-    "before",
-    "but",
-    "by",
-    "can",
-    "does",
-    "even",
-    "however",
-    "if",
-    "instead",
-    "nor",
-    "not",
-    "of",
-    "or",
-    "so",
-    "that",
-    "therefore",
-    "though",
-    "which",
-    "while",
-    "who",
-  ]);
-
   const CONTENT_MODES = {
     code: {
       label: "代码",
       snippets: CODE_SNIPPETS,
     },
-    math: {
-      label: "数学",
-      snippets: MATH_SNIPPETS,
-    },
-    english: {
-      label: "英语",
-      snippets: ENGLISH_SNIPPETS,
+    brain: {
+      label: "脑洞",
+      snippets: BRAIN_SNIPPETS,
     },
   };
 
   const CODE_FONT = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
-  const MATH_FONT = 'Georgia, "Times New Roman", "STIX Two Math", Cambria, serif';
-  const ENGLISH_FONT = 'Georgia, "Times New Roman", serif';
+  const BRAIN_FONT = 'ui-rounded, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui, sans-serif';
+  const BRAIN_ASSET_URL = "./assets/brain.svg";
 
   let width = 1;
   let height = 1;
@@ -703,22 +519,31 @@
   const MAX_SPLASHES_PER_FRAME = 18;
   const EFFECT_EPS = 0.07;
   let frameSplashes = 0;
+  const brainImage = new Image();
+  let brainImageReady = false;
 
   const rand = (min, max) => Math.random() * (max - min) + min;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-  function fontForMode(modeName) {
-    if (modeName === "math") {
-      return MATH_FONT;
+  brainImage.addEventListener("load", () => {
+    brainImageReady = true;
+    for (const panel of snippets) {
+      if (panel.mode === "brain") {
+        panel.cache = null;
+      }
     }
-    if (modeName === "english") {
-      return ENGLISH_FONT;
+  });
+  brainImage.src = BRAIN_ASSET_URL;
+
+  function fontForMode(modeName) {
+    if (modeName === "brain") {
+      return BRAIN_FONT;
     }
     return CODE_FONT;
   }
 
   function modeUsesProportionalText(modeName) {
-    return modeName === "math";
+    return modeName === "brain";
   }
 
   function trimList(list, limit) {
@@ -808,10 +633,15 @@
       currentSnippet = pickNextSnippet();
     }
 
+    if (activeMode === "brain") {
+      buildBrainScene();
+      return;
+    }
+
     const fontFamily = fontForMode(activeMode);
     const maxLen = Math.max(...currentSnippet.lines.map((line) => Array.from(line).length));
     const fitFont = (width - 56) / Math.max(24, maxLen * 0.64 + 5.5);
-    const baseFont = Math.round(clamp(Math.min(width / 70, fitFont), width < 620 ? 8 : 13, activeMode === "math" ? 20 : 18));
+    const baseFont = Math.round(clamp(Math.min(width / 70, fitFont), width < 620 ? 8 : 13, activeMode === "brain" ? 19 : 18));
     const lineHeight = Math.round(baseFont * 1.72);
     const padding = Math.round(baseFont * 1.25);
     const gutter = Math.round(baseFont * 3.15);
@@ -851,6 +681,40 @@
     totalCleanable = codeChars.length;
   }
 
+  function buildBrainScene() {
+    const brainSize = Math.round(
+      clamp(
+        Math.min(width * (width < 620 ? 0.92 : 0.78), height * (height < 560 ? 0.68 : 0.78)),
+        280,
+        Math.min(width - 18, height - 76, 760),
+      ),
+    );
+    const itemFont = Math.round(clamp(brainSize * 0.028, 11, 18));
+    const panel = {
+      ...currentSnippet,
+      mode: "brain",
+      level,
+      fontSize: itemFont,
+      fontFamily: BRAIN_FONT,
+      charWidth: Math.round(itemFont * 1.12),
+      lineHeight: Math.round(itemFont * 1.18),
+      padding: 0,
+      gutter: 0,
+      header: 0,
+      width: brainSize,
+      height: brainSize,
+      x: 0,
+      y: 0,
+      birth: elapsed,
+    };
+
+    layoutBrainPanel(panel);
+    panel.cache = createPanelCache(panel);
+    snippets.push(panel);
+    createBrainCharsForPanel(panel);
+    totalCleanable = codeChars.length;
+  }
+
   function makeCacheCanvas(cacheWidth, cacheHeight) {
     const cacheCanvas = document.createElement("canvas");
     cacheCanvas.width = Math.max(1, Math.round(cacheWidth * dpr));
@@ -863,6 +727,11 @@
   function createPanelCache(panel) {
     const cache = makeCacheCanvas(panel.width, panel.height);
     const panelCtx = cache.ctx;
+
+    if (panel.mode === "brain") {
+      paintBrainSilhouette(panelCtx, panel);
+      return cache;
+    }
 
     panelCtx.save();
     roundRect(panelCtx, 0, 0, panel.width, panel.height, 8);
@@ -916,6 +785,25 @@
     return cache;
   }
 
+  function paintBrainSilhouette(panelCtx, panel) {
+    panelCtx.save();
+
+    if (brainImageReady) {
+      const brainSize = Math.min(panel.width * 0.98, panel.height * 0.98);
+      const imageX = (panel.width - brainSize) * 0.5;
+      const imageY = (panel.height - brainSize) * 0.5;
+      panelCtx.drawImage(brainImage, imageX, imageY, brainSize, brainSize);
+    } else {
+      const emojiSize = Math.min(panel.width * 0.94, panel.height * 1.24);
+      panelCtx.textAlign = "center";
+      panelCtx.textBaseline = "middle";
+      panelCtx.font = `${emojiSize}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui, sans-serif`;
+      panelCtx.fillText("🧠", panel.width * 0.5, panel.height * 0.52);
+    }
+
+    panelCtx.restore();
+  }
+
   function layoutPanel(panel) {
     if (width < 620) {
       panel.x = 12;
@@ -926,6 +814,115 @@
     const drift = Math.sin(level * 1.7) * Math.min(90, width * 0.08);
     panel.x = clamp((width - panel.width) * 0.5 + drift, 176, width - panel.width - 24);
     panel.y = clamp(height * 0.1 + Math.cos(level * 1.2) * 28, 28, height - panel.height - 130);
+  }
+
+  function layoutBrainPanel(panel) {
+    const bias = width >= 760 ? width * 0.04 : 0;
+    panel.x = clamp((width - panel.width) * 0.5 + bias, 9, width - panel.width - 9);
+    panel.y = clamp(height * 0.025, 8, height - panel.height - 42);
+  }
+
+  function createBrainCharsForPanel(panel) {
+    const items = panel.items || ["🐛", "💩", "💧"];
+    const targetCount = brainTargetCount(panel);
+    const spots = createBrainSpots(panel, targetCount);
+    ctx.save();
+    ctx.font = `700 ${panel.fontSize}px ${panel.fontFamily}`;
+    for (let i = 0; i < targetCount; i += 1) {
+      const char = pickBrainItem(items, panel.seed || level, i);
+      const spot = spots[i % spots.length];
+      const widthForChar = Math.max(panel.fontSize * 0.86, ctx.measureText(char).width);
+      const x = panel.x + panel.width * spot[0] - widthForChar * 0.5;
+      const centerY = panel.y + panel.height * spot[1];
+      codeChars.push({
+        char,
+        mode: panel.mode,
+        originX: x,
+        originY: centerY + panel.fontSize * 0.42,
+        x,
+        y: centerY + panel.fontSize * 0.42,
+        vx: 0,
+        vy: 0,
+        angle: 0,
+        spin: 0,
+        fontSize: panel.fontSize,
+        fontFamily: panel.fontFamily,
+        charWidth: widthForChar,
+        lineHeight: panel.lineHeight,
+        color: colorForBrainToken(char),
+        hp: rand(16, 30),
+        maxHp: 30,
+        wet: 0,
+        heat: 0,
+        frost: 0,
+        shock: 0,
+        impact: 0,
+        jitter: 0,
+        breakWeapon: "water",
+        state: "attached",
+      });
+    }
+    ctx.restore();
+  }
+
+  function brainTargetCount(panel) {
+    const base = panel.targetCount || AVERAGE_CODE_CLEANABLE;
+    const sizeFactor = clamp((panel.width - 280) / 320, 0, 1);
+    return Math.round(clamp(base * (0.46 + sizeFactor * 0.54), 140, base));
+  }
+
+  function createBrainSpots(panel, targetCount) {
+    const seed = panel.seed || level * 31;
+    const maskArea = panel.width * panel.height * 0.58;
+    const spacing = clamp(Math.sqrt(maskArea / targetCount) * 0.86, panel.fontSize * 0.95, panel.fontSize * 1.55);
+    const cols = Math.ceil(panel.width / spacing);
+    const rows = Math.ceil(panel.height / spacing);
+    const spots = [];
+
+    for (let row = 0; row < rows; row += 1) {
+      for (let col = 0; col < cols; col += 1) {
+        const index = row * cols + col;
+        const stagger = row % 2 === 0 ? 0 : 0.5;
+        const jitterX = (hash01(seed, index * 3 + 1) - 0.5) * spacing * 0.36;
+        const jitterY = (hash01(seed, index * 3 + 2) - 0.5) * spacing * 0.36;
+        const x = ((col + 0.5 + stagger) * spacing + jitterX) / panel.width;
+        const y = ((row + 0.5) * spacing + jitterY) / panel.height;
+        if (insideBrainMask(x, y)) {
+          spots.push({ x, y, order: hash01(seed, index * 3 + 3) });
+        }
+      }
+    }
+
+    spots.sort((a, b) => a.order - b.order);
+    return spots.length > 0 ? spots.map((spot) => [spot.x, spot.y]) : [[0.5, 0.5]];
+  }
+
+  function insideBrainMask(x, y) {
+    if (x < 0.08 || x > 0.91 || y < 0.18 || y > 0.82) {
+      return false;
+    }
+    const lobes = [
+      [0.37, 0.41, 0.3, 0.24],
+      [0.6, 0.4, 0.3, 0.23],
+      [0.25, 0.51, 0.17, 0.18],
+      [0.78, 0.53, 0.17, 0.19],
+      [0.39, 0.64, 0.22, 0.17],
+      [0.63, 0.7, 0.2, 0.14],
+    ];
+    return lobes.some(([cx, cy, rx, ry]) => {
+      const dx = (x - cx) / rx;
+      const dy = (y - cy) / ry;
+      return dx * dx + dy * dy <= 1;
+    });
+  }
+
+  function pickBrainItem(items, seed, index) {
+    return items[Math.floor(hash01(seed + 97, index) * items.length) % items.length];
+  }
+
+  function hash01(seed, index) {
+    const value = Math.sin(seed * 999 + index * 37.719) * 43758.5453;
+    return value - Math.floor(value);
   }
 
   function createCharsForPanel(panel) {
@@ -980,11 +977,8 @@
   }
 
   function highlightLine(line, modeName = activeMode) {
-    if (modeName === "math") {
-      return highlightMathLine(line);
-    }
-    if (modeName === "english") {
-      return highlightEnglishLine(line);
+    if (modeName === "brain") {
+      return highlightBrainLine(line);
     }
     return highlightCodeLine(line);
   }
@@ -1017,15 +1011,9 @@
     return tokenizeLine(line, tokenPattern, colorForCodeToken);
   }
 
-  function highlightMathLine(line) {
-    const tokenPattern =
-      /\b(?:sin|cos|tan|log|ln|lim|Var|AM|GM)\b|\b[A-Za-z]+(?:_[A-Za-z0-9]+)?\b|\b\d+(?:\.\d+)?\b|[₀-₉⁰-⁹ᵢᵏⁿ⁻ₙ₁²³⅗⅘¾αβσ∞∑√∪∩∈∣⇒→≤≥≠−⁄{}()[\].,;:，：+\-*/=<>!&|?^~]/g;
-    return tokenizeLine(line, tokenPattern, colorForMathToken);
-  }
-
-  function highlightEnglishLine(line) {
-    const tokenPattern = /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b[A-Za-z]+(?:'[A-Za-z]+)?\b|\b\d+\b|[{}()[\].,;:!?-]/g;
-    return tokenizeLine(line, tokenPattern, colorForEnglishToken);
+  function highlightBrainLine(line) {
+    const tokenPattern = /🐛|💩|💧/gu;
+    return tokenizeLine(line, tokenPattern, colorForBrainToken);
   }
 
   function colorForCodeToken(token, line, index) {
@@ -1056,43 +1044,15 @@
     return HIGHLIGHT.identifier;
   }
 
-  function colorForMathToken(token) {
-    if (/^\d/.test(token)) {
-      return HIGHLIGHT.number;
-    }
-    if (/^[+\-*/=<>^~∪∩∈∣⇒→≤≥≠−⁄√∑∞]$/.test(token)) {
-      return HIGHLIGHT.operator;
-    }
-    if (/^[{}()[\].,;:!?，：]$/.test(token)) {
-      return HIGHLIGHT.punctuation;
-    }
-    if (/^[₀-₉⁰-⁹ᵢᵏⁿ⁻ₙ₁²³⅗⅘¾αβσ]$/.test(token)) {
-      return HIGHLIGHT.number;
-    }
-    if (MATH_WORDS.has(token)) {
-      return HIGHLIGHT.function;
-    }
-    if (/^[a-zA-Z](_[a-zA-Z0-9]+)?$/.test(token)) {
+  function colorForBrainToken(token) {
+    if (token === "🐛") {
       return HIGHLIGHT.keyword;
     }
-    return HIGHLIGHT.identifier;
-  }
-
-  function colorForEnglishToken(token) {
-    if (token.startsWith("'") || token.startsWith('"')) {
+    if (token === "💩") {
       return HIGHLIGHT.string;
     }
-    if (/^\d/.test(token)) {
-      return HIGHLIGHT.number;
-    }
-    if (/^[{}()[\].,;:!?-]$/.test(token)) {
-      return HIGHLIGHT.punctuation;
-    }
-    if (ENGLISH_WORDS.has(token)) {
-      return HIGHLIGHT.keyword;
-    }
-    if (token.length >= 8) {
-      return HIGHLIGHT.function;
+    if (token === "💧") {
+      return HIGHLIGHT.property;
     }
     return HIGHLIGHT.identifier;
   }
@@ -2286,7 +2246,7 @@
       setWeapon(WEAPON_ORDER[Number(numberKey) - 1]);
       event.preventDefault();
     }
-    if (/^[5-7]$/.test(numberKey)) {
+    if (/^[5-6]$/.test(numberKey)) {
       setMode(MODE_ORDER[Number(numberKey) - 5]);
       event.preventDefault();
     }
